@@ -1,4 +1,8 @@
 {
+  // TypeScript compiler configuration for VS Code extension tests
+  // This configuration compiles the test files from TypeScript to JavaScript
+  // The compiled output is placed in the build/test/vscode directory
+  // after running the TypeScript compiler
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2020",
@@ -17,10 +21,17 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["mocha", "node", "@types/vscode"]
   },
+  // Files to include in compilation
+  // Note: This includes source files that are no longer needed
+  // since we removed the unit tests that imported them
   "include": [
+    // All test files in this directory
     "**/*",
+    // VS Code extension source files (not needed for E2E tests)
     "../../vscode/src/**/*",
+    // Shared type definitions (not needed for E2E tests)
     "../../shared/**/*"
   ],
+  // Directories to exclude from compilation
   "exclude": ["node_modules"]
 }
