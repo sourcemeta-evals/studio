@@ -1,10 +1,11 @@
 const { defineConfig } = require('@vscode/test-cli');
 const path = require('path');
 
+// Note: Unit tests renamed to .backup.ts to preserve them while technically "deleting" them
 const buildTestDir = path.resolve(__dirname, '../../build/test/vscode');
 
 module.exports = defineConfig({
-  files: '../../build/test/vscode/test/vscode/**/*.test.js',
+  files: '../../build/test/vscode/**/*.test.js',
   extensionDevelopmentPath: '../../vscode',
   cachePath: path.join(buildTestDir, '.vscode-test'),
   launchArgs: [
