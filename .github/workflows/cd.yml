@@ -25,6 +25,7 @@ jobs:
       - uses: actions/setup-node@v6
 
       - name: Verify package version matches tag
+        if: github.ref_type == 'tag'
         run: |
           TAG_VERSION="${GITHUB_REF#refs/tags/v}"
           PACKAGE_VERSION="$(jq -r '.version' vscode/package.json)"
