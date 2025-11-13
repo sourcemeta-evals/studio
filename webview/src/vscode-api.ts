@@ -8,19 +8,62 @@ declare global {
   }
 }
 
+type ActiveTab = 'lint' | 'format' | 'metaschema';
+
+interface TabState {
+  activeTab?: ActiveTab;
+}
+
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  public postMessage(message: unknown): void {
+  private postMessage(message: unknown): void {
     this.vsCodeApi.postMessage(message);
   }
 
-  public getState(): unknown {
+  private getState(): unknown {
     return this.vsCodeApi.getState();
   }
 
-  public setState(state: unknown): void {
+  private setState(state: unknown): void {
     this.vsCodeApi.setState(state);
+  }
+
+  /**
+   * Open an external URL in the default browser
+   */
+  public openExternal(url: string): void {
+    this.postMessage({ command: 'openExternal', url });
+  }
+
+  /**
+   * Request the extension to format the current schema file
+   */
+  public formatSchema(): void {
+    this.postMessage({ command: 'formatSchema' });
+  }
+
+  /**
+   * Navigate to a specific position in the editor
+   * @param position [lineStart, colStart, lineEnd, colEnd]
+   */
+  public goToPosition(position: [number, number, number, number]): void {
+    this.postMessage({ command: 'goToPosition', position });
+  }
+
+  /**
+   * Get the currently active tab from persisted state
+   */
+  public getActiveTab(): ActiveTab | undefined {
+    const savedState = this.getState() as TabState | undefined;
+    return savedState?.activeTab;
+  }
+
+  /**
+   * Set the active tab and persist it to state
+   */
+  public setActiveTab(tab: ActiveTab): void {
+    this.setState({ activeTab: tab });
   }
 }
 
