@@ -3,6 +3,12 @@
  * These types define the communication contract
  */
 
+/**
+ * Position type representing a range in a document
+ * [lineStart, colStart, lineEnd, colEnd]
+ */
+export type Position = [number, number, number, number];
+
 export interface FileInfo {
     absolutePath: string;
     displayPath: string;
@@ -17,7 +23,7 @@ export interface LintError {
     description?: string | null;
     path: string;
     schemaLocation: string;
-    position: [number, number, number, number] | null; // [lineStart, colStart, lineEnd, colEnd], null for YAML
+    position: Position | null; // null for YAML
 }
 
 export interface LintResult {
@@ -38,7 +44,7 @@ export interface MetaschemaError {
     instanceLocation: string;
     keywordLocation: string;
     absoluteKeywordLocation?: string;
-    instancePosition?: [number, number, number, number]; // [lineStart, colStart, lineEnd, colEnd]
+    instancePosition?: Position;
 }
 
 export interface CliError {
@@ -77,6 +83,6 @@ export interface PanelState {
 
 export interface WebviewMessage {
     command: 'goToPosition' | 'formatSchema' | 'openExternal';
-    position?: [number, number, number, number];
+    position?: Position;
     url?: string;
 }
