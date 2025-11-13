@@ -6,6 +6,8 @@ UNZIP = unzip
 MKDIR = mkdir
 JQ = jq
 
+# Unnecessary
+
 all: webview vscode vscode-test vscode-package
 
 webview: .always
