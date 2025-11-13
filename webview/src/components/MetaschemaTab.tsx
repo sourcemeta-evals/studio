@@ -14,7 +14,7 @@ function isMetaschemaError(error: unknown): error is MetaschemaError {
 
 export function MetaschemaTab({ metaschemaResult, noFileSelected }: MetaschemaTabProps) {
   const handleGoToPosition = (position: [number, number, number, number]) => {
-    vscode.postMessage({ command: 'goToPosition', position });
+    (vscode as any).postMessage({ command: 'goToPosition', position });
   };
 
   const errors = metaschemaResult.errors || [];

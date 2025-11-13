@@ -11,7 +11,7 @@ export interface LintTabProps {
 
 export function LintTab({ lintResult, blocked, noFileSelected }: LintTabProps) {
   const handleGoToPosition = (position: [number, number, number, number]) => {
-    vscode.postMessage({ command: 'goToPosition', position });
+    (vscode as any).postMessage({ command: 'goToPosition', position });
   };
 
   const errors = lintResult.errors || [];

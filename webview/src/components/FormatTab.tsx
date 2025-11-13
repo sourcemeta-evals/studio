@@ -13,7 +13,7 @@ export interface FormatTabProps {
 
 export function FormatTab({ formatResult, fileInfo, hasParseErrors, blocked, noFileSelected }: FormatTabProps) {
   const handleFormatSchema = () => {
-    vscode.postMessage({ command: 'formatSchema' });
+    (vscode as any).postMessage({ command: 'formatSchema' });
   };
 
   const isYaml = fileInfo?.isYaml || false;
