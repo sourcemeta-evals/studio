@@ -1,3 +1,5 @@
+// Main application component
+// Manages the state and rendering of the VS Code webview panel
 import { useState, useEffect } from 'react';
 import type { PanelState } from '../../shared/types.ts';
 import { vscode } from './vscode-api';
@@ -11,17 +13,21 @@ import { Footer } from './components/Footer';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
+  // Main application state from the extension
   const [state, setState] = useState<PanelState | null>(null);
+  // Track which tab is currently active (lint, format, or metaschema)
   const [activeTab, setActiveTab] = useState<'lint' | 'format' | 'metaschema'>('lint');
 
+  // Initialize component and restore saved tab preference
   useEffect(() => {
-    // Restore last active tab from vscode state
-    const savedState = vscode.getState() as { activeTab?: string } | undefined;
-    if (savedState && savedState.activeTab) {
-      setActiveTab(savedState.activeTab as 'lint' | 'format' | 'metaschema');
+    // Try to restore the previously active tab from VS Code state
+    const savedTab = vscode.getActiveTab();
+    if (savedTab) {
+      setActiveTab(savedTab);
     }
 
     // Listen for messages from the extension
+    // The extension will send updates when the panel state changes
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message.type === 'update') {
@@ -29,25 +35,35 @@ function App() {
       }
     };
 
+    // Register the message listener
     window.addEventListener('message', handleMessage);
 
+    // Cleanup function to remove listener when component unmounts
     return () => {
       window.removeEventListener('message', handleMessage);
     };
   }, []);
 
+  // Automatically switch to metaschema tab if there are blocking metaschema errors
   useEffect(() => {
     if (state?.blockedByMetaschema) {
+      // Force switch to metaschema tab to show critical errors
       setActiveTab('metaschema');
-      vscode.setState({ activeTab: 'metaschema' });
+      // Persist the tab change to VS Code state
+      vscode.setActiveTab('metaschema');
     }
   }, [state?.blockedByMetaschema]);
 
+  // Handle tab change events from the Tabs component
+  // Updates both local React state and persists to VS Code state
   const handleTabChange = (tab: 'lint' | 'format' | 'metaschema') => {
+    // Update local state
     setActiveTab(tab);
-    vscode.setState({ activeTab: tab });
+    // Persist to VS Code state so it's remembered across panel opens
+    vscode.setActiveTab(tab);
   };
 
+  // Show loading state while waiting for initial state from extension
   if (!state) {
     return (
       <div className="flex items-center justify-center h-screen text-(--vscode-muted) text-sm">

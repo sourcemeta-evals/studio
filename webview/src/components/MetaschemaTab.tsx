@@ -1,3 +1,4 @@
+// Metaschema tab component - displays metaschema validation errors
 import type { MetaschemaResult, MetaschemaError } from '../../../shared/types.ts';
 import { vscode } from '../vscode-api';
 import { RawOutput } from './RawOutput';
@@ -8,13 +9,15 @@ export interface MetaschemaTabProps {
   noFileSelected?: boolean;
 }
 
+// Type guard to check if an error is a metaschema error with position info
 function isMetaschemaError(error: unknown): error is MetaschemaError {
   return typeof error === 'object' && error !== null && 'instancePosition' in error;
 }
 
 export function MetaschemaTab({ metaschemaResult, noFileSelected }: MetaschemaTabProps) {
+  // Handler to navigate to error position when clicking on metaschema errors
   const handleGoToPosition = (position: [number, number, number, number]) => {
-    vscode.postMessage({ command: 'goToPosition', position });
+    vscode.goToPosition(position);
   };
 
   const errors = metaschemaResult.errors || [];

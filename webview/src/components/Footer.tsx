@@ -1,3 +1,4 @@
+// Footer component - displays version info and action buttons
 import { vscode } from '../vscode-api';
 import { Star, Bug } from 'lucide-react';
 
@@ -7,16 +8,22 @@ export interface FooterProps {
 }
 
 export function Footer({ cliVersion, extensionVersion }: FooterProps) {
+  // Handler for starring the repository on GitHub
+  // Opens the GitHub repo page in the default browser
   const handleStarRepo = () => {
-    vscode.postMessage({ command: 'openExternal', url: 'https://github.com/sourcemeta/studio' });
+    vscode.openExternal('https://github.com/sourcemeta/studio');
   };
 
+  // Handler for reporting bugs
+  // Opens the new issue page on GitHub
   const handleReportBug = () => {
-    vscode.postMessage({ command: 'openExternal', url: 'https://github.com/sourcemeta/studio/issues/new' });
+    vscode.openExternal('https://github.com/sourcemeta/studio/issues/new');
   };
 
+  // Handler for visiting the Sourcemeta website
+  // Opens the company homepage in the default browser
   const handleSourcemetaClick = () => {
-    vscode.postMessage({ command: 'openExternal', url: 'https://www.sourcemeta.com/' });
+    vscode.openExternal('https://www.sourcemeta.com/');
   };
 
   return (

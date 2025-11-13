@@ -1,3 +1,4 @@
+// Format tab component - displays schema formatting status and provides formatting action
 import type { CommandResult, FileInfo } from '../../../shared/types.ts';
 import { vscode } from '../vscode-api';
 import { RawOutput } from './RawOutput';
@@ -12,8 +13,9 @@ export interface FormatTabProps {
 }
 
 export function FormatTab({ formatResult, fileInfo, hasParseErrors, blocked, noFileSelected }: FormatTabProps) {
+  // Handler to trigger schema formatting via the VS Code extension
   const handleFormatSchema = () => {
-    vscode.postMessage({ command: 'formatSchema' });
+    vscode.formatSchema();
   };
 
   const isYaml = fileInfo?.isYaml || false;

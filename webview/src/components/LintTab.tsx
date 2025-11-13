@@ -1,3 +1,4 @@
+// Lint tab component - displays linting errors and allows navigation to error positions
 import type { LintResult } from '../../../shared/types.ts';
 import { vscode } from '../vscode-api';
 import { RawOutput } from './RawOutput';
@@ -10,8 +11,9 @@ export interface LintTabProps {
 }
 
 export function LintTab({ lintResult, blocked, noFileSelected }: LintTabProps) {
+  // Handler to navigate to a specific position in the editor when clicking an error
   const handleGoToPosition = (position: [number, number, number, number]) => {
-    vscode.postMessage({ command: 'goToPosition', position });
+    vscode.goToPosition(position);
   };
 
   const errors = lintResult.errors || [];
