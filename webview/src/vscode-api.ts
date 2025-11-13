@@ -2,6 +2,9 @@ import type { TabType, WebviewState, WebviewToExtensionMessage } from '../../pro
 
 export type { TabType };
 
+// Local Position type for this file
+type Position = [number, number, number, number];
+
 interface VSCodeAPI {
   postMessage(message: unknown): void;
   getState(): unknown;
@@ -29,7 +32,7 @@ class VSCodeAPIWrapper {
     this.postMessage({ command: 'formatSchema' });
   }
 
-  public goToPosition(position: [number, number, number, number]): void {
+  public goToPosition(position: Position): void {
     this.postMessage({ command: 'goToPosition', position });
   }
 

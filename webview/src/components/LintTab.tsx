@@ -3,6 +3,9 @@ import { vscode } from '../vscode-api';
 import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
+// Local Position type for this component
+type Position = [number, number, number, number];
+
 export interface LintTabProps {
   lintResult: LintResult;
   blocked?: boolean;
@@ -10,7 +13,7 @@ export interface LintTabProps {
 }
 
 export function LintTab({ lintResult, blocked, noFileSelected }: LintTabProps) {
-  const handleGoToPosition = (position: [number, number, number, number]) => {
+  const handleGoToPosition = (position: Position) => {
     vscode.goToPosition(position);
   };
 
