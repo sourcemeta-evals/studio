@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { DiagnosticType } from '../types';
 import { LintError, CliError, MetaschemaError } from '../../../shared/types';
 import { errorPositionToRange } from '../utils/fileUtils';
+import type { Position } from '../../../protocol/cli';
 
 /**
  * Manages VS Code diagnostics for lint and metaschema errors
@@ -24,7 +25,7 @@ export class DiagnosticManager {
         type: DiagnosticType
     ): void {
         const diagnostics = errors
-            .filter((error): error is LintError & { position: [number, number, number, number] } => 
+            .filter((error): error is LintError & { position: Position } => 
                 error.position !== null) // Skip errors without positions for YAML files
             .map(error => {
             const range = errorPositionToRange(error.position);
@@ -107,7 +108,7 @@ export class DiagnosticManager {
                 return 'instancePosition' in error && error.instancePosition !== undefined;
             })
             .map(error => {
-                const position = error.instancePosition as [number, number, number, number];
+                const position = error.instancePosition as Position;
                 const range = errorPositionToRange(position);
 
                 const diagnostic = new vscode.Diagnostic(
