@@ -124,7 +124,7 @@ export function MetaschemaTab({ metaschemaResult, noFileSelected }: MetaschemaTa
   } else if (metaschemaResult.exitCode === 1) {
     const error = errors.length > 0 ? errors[0] : null;
 
-    const errorPosition: [number, number, number, number] | null = 
+    const errorPosition: [number, number, number, number] | null =
       error && 'instancePosition' in error && error.instancePosition
         ? error.instancePosition
         : null;

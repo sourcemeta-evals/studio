@@ -208,12 +208,12 @@ export function parseMetaschemaResult(output: string, exitCode: number | null): 
             
             const parsed = JSON.parse(jsonStr);
             if (Array.isArray(parsed)) {
-                result.errors = parsed.map((error: { 
-                    error?: string; 
-                    instanceLocation?: string; 
-                    keywordLocation?: string; 
+                result.errors = parsed.map((error: {
+                    error?: string;
+                    instanceLocation?: string;
+                    keywordLocation?: string;
                     absoluteKeywordLocation?: string;
-                    instancePosition?: [number, number, number, number];
+                    instancePosition?: Position;
                 }) => ({
                     error: error.error || 'Validation error',
                     instanceLocation: error.instanceLocation || '',
