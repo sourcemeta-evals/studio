@@ -1,4 +1,4 @@
-import type { LintResult } from '../../../shared/types.ts';
+import type { LintResult, Position } from '../../../shared/types.ts';
 import { vscode } from '../vscode-api';
 import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
@@ -10,7 +10,7 @@ export interface LintTabProps {
 }
 
 export function LintTab({ lintResult, blocked, noFileSelected }: LintTabProps) {
-  const handleGoToPosition = (position: [number, number, number, number]) => {
+  const handleGoToPosition = (position: Position) => {
     vscode.postMessage({ command: 'goToPosition', position });
   };
 
