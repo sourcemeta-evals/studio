@@ -3,13 +3,19 @@
  * Types that represent CLI command results and errors
  */
 
+/**
+ * Position in a file: [startLine, startColumn, endLine, endColumn]
+ * All values are 1-based
+ */
+export type Position = [number, number, number, number];
+
 export interface LintError {
   id: string;
   message: string;
   description?: string | null;
   path: string;
   schemaLocation: string;
-  position: [number, number, number, number] | null;
+  position: Position | null;
 }
 
 export interface LintResult {
@@ -30,7 +36,7 @@ export interface MetaschemaError {
   instanceLocation: string;
   keywordLocation: string;
   absoluteKeywordLocation?: string;
-  instancePosition?: [number, number, number, number];
+  instancePosition?: Position;
 }
 
 export interface CliError {
