@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { FileInfo, LintResult, MetaschemaResult, CliError } from '../../../protocol/types';
+import { Position, FileInfo, LintResult, MetaschemaResult, CliError } from '../../../protocol/types';
 
 /**
  * Parse generic CLI error response from JSON output
@@ -125,7 +125,7 @@ export function parseLintResult(lintOutput: string): LintResult {
                     description: description,
                     path: '/',
                     schemaLocation: '/',
-                    position: [parsed.line, parsed.column, parsed.line, parsed.column]
+                    position: [parsed.line, parsed.column, parsed.line, parsed.column] as Position
                 }]
             };
         }
@@ -151,7 +151,7 @@ export function parseLintResult(lintOutput: string): LintResult {
                     description: description,
                     path: parsed.location || '/',
                     schemaLocation: parsed.identifier || '/',
-                    position: hasPosition ? [parsed.line, parsed.column, parsed.line, parsed.column] : null
+                    position: hasPosition ? [parsed.line, parsed.column, parsed.line, parsed.column] as Position : null
                 }]
             };
         }
@@ -188,7 +188,7 @@ export function parseMetaschemaResult(output: string, exitCode: number | null): 
                 keywordLocation: '/',
                 absoluteKeywordLocation: cliError.identifier,
                 instancePosition: cliError.line && cliError.column 
-                    ? [cliError.line, cliError.column, cliError.line, cliError.column] 
+                    ? [cliError.line, cliError.column, cliError.line, cliError.column] as Position
                     : undefined
             }];
             return result;
@@ -213,7 +213,7 @@ export function parseMetaschemaResult(output: string, exitCode: number | null): 
                     instanceLocation?: string; 
                     keywordLocation?: string; 
                     absoluteKeywordLocation?: string;
-                    instancePosition?: [number, number, number, number];
+                    instancePosition?: Position;
                 }) => ({
                     error: error.error || 'Validation error',
                     instanceLocation: error.instanceLocation || '',
@@ -260,7 +260,7 @@ export function arrayToPosition(arr: [number, number]): vscode.Position {
  * Convert error position array to VS Code range
  * Position array is 1-based and inclusive, VS Code is 0-based and end-exclusive
  */
-export function errorPositionToRange(position: [number, number, number, number]): vscode.Range {
+export function errorPositionToRange(position: Position): vscode.Range {
     const [lineStart, columnStart, lineEnd, columnEnd] = position;
     return new vscode.Range(
         new vscode.Position(lineStart - 1, columnStart - 1),
