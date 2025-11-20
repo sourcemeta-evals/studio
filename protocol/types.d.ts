@@ -6,7 +6,8 @@
 import type {
   LintResult,
   FormatResult,
-  MetaschemaResult
+  MetaschemaResult,
+  Position
 } from './cli';
 
 export type TabType = 'lint' | 'format' | 'metaschema';
@@ -30,7 +31,8 @@ export type {
   MetaschemaError,
   CliError,
   MetaschemaResult,
-  FormatResult
+  FormatResult,
+  Position
 } from './cli';
 
 export interface PanelState {
@@ -51,7 +53,7 @@ export type WebviewCommand = 'goToPosition' | 'formatSchema' | 'openExternal';
 
 export interface WebviewToExtensionMessage {
   command: WebviewCommand;
-  position?: [number, number, number, number];
+  position?: Position;
   url?: string;
 }
 
