@@ -3,8 +3,8 @@ import type { LucideIcon } from 'lucide-react';
 import { calculateLintStatus, calculateFormatStatus, calculateMetaschemaStatus } from '../utils/tabStatus';
 
 export interface TabsProps {
-  activeTab: 'lint' | 'format' | 'metaschema';
-  onTabChange: (tab: 'lint' | 'format' | 'metaschema') => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
   state: PanelState;
 }
 
@@ -22,10 +22,10 @@ export function Tabs({ activeTab, onTabChange, state }: TabsProps) {
   const metaschemaStatus = calculateMetaschemaStatus(state.metaschemaResult.exitCode, state.isLoading, state.noFileSelected);
   const lintDisabled = !!state.blockedByMetaschema;
 
-  const Tab = ({ 
-    id, 
-    label, 
-    Icon, 
+  const Tab = ({
+    id,
+    label,
+    Icon,
     color,
     disabled = false
   }: TabProps) => (
@@ -33,8 +33,8 @@ export function Tabs({ activeTab, onTabChange, state }: TabsProps) {
       className={`
         px-4 py-2 cursor-pointer border-none bg-transparent
         text-[13px] border-b-2 transition-all flex items-center gap-1.5
-        ${activeTab === id 
-          ? 'text-(--vscode-fg) border-(--vscode-accent)' 
+        ${activeTab === id
+          ? 'text-(--vscode-fg) border-(--vscode-accent)'
           : 'text-(--vscode-muted) border-transparent hover:text-(--vscode-fg)'
         }
       `}
