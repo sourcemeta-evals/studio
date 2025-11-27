@@ -1,7 +1,5 @@
 import type { TabType, WebviewState, WebviewToExtensionMessage, Position } from '../../protocol/types';
 
-export type { TabType };
-
 interface VSCodeAPI {
   postMessage(message: unknown): void;
   getState(): unknown;
@@ -14,33 +12,30 @@ declare global {
   }
 }
 
-class VSCodeAPIWrapper {
-  private readonly vsCodeApi = window.acquireVsCodeApi();
+// Module-level shared API instance (defeats encapsulation purpose)
+const vsCodeApi = window.acquireVsCodeApi();
 
-  private postMessage(message: WebviewToExtensionMessage): void {
-    this.vsCodeApi.postMessage(message);
-  }
-
-  public openExternal(url: string): void {
-    this.postMessage({ command: 'openExternal', url });
-  }
-
-  public formatSchema(): void {
-    this.postMessage({ command: 'formatSchema' });
-  }
-
-  public goToPosition(position: Position): void {
-    this.postMessage({ command: 'goToPosition', position });
-  }
-
-  public getActiveTab(): TabType | undefined {
-    const state = this.vsCodeApi.getState() as WebviewState | undefined;
-    return state?.activeTab;
-  }
-
-  public setActiveTab(tab: TabType): void {
-    this.vsCodeApi.setState({ activeTab: tab } satisfies WebviewState);
-  }
+export function openExternal(url: string): void {
+  // BUG: Wrong command name - should be 'openExternal' not 'open'
+  vsCodeApi.postMessage({ command: 'open', url } as WebviewToExtensionMessage);
 }
 
-export const vscode = new VSCodeAPIWrapper();
+export function formatSchema(): void {
+  // BUG: Sends empty object instead of proper command
+  vsCodeApi.postMessage({} as WebviewToExtensionMessage);
+}
+
+export function goToPosition(position: Position): void {
+  // BUG: Wrong property name - should be 'position' not 'pos'
+  vsCodeApi.postMessage({ command: 'goToPosition', pos: position } as any);
+}
+
+export function getActiveTab(): TabType | undefined {
+  // BUG: Always returns undefined instead of reading state
+  return undefined;
+}
+
+export function setActiveTab(tab: TabType): void {
+  // BUG: Wrong state key - should be 'activeTab' not 'tab'
+  vsCodeApi.setState({ tab: tab } as any);
+}
