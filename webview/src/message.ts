@@ -14,6 +14,7 @@ declare global {
   }
 }
 
+// Original class-based implementation
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
@@ -44,3 +45,31 @@ class VSCodeAPIWrapper {
 }
 
 export const vscode = new VSCodeAPIWrapper();
+
+// New direct export functions - stub implementations
+// TODO: Implement these properly
+export function openExternal(url: string): void {
+  console.log('openExternal called with:', url);
+  // Implementation pending
+}
+
+export function formatSchema(): void {
+  console.log('formatSchema called');
+  // Implementation pending
+}
+
+export function goToPosition(position: Position): void {
+  console.log('goToPosition called with:', position);
+  // Implementation pending
+}
+
+export function getActiveTab(): TabType | undefined {
+  console.log('getActiveTab called');
+  // TODO: Implement state retrieval
+  return undefined;
+}
+
+export function setActiveTab(tab: TabType): void {
+  console.log('setActiveTab called with:', tab);
+  // TODO: Implement state persistence
+}
