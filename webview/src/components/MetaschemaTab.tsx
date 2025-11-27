@@ -3,9 +3,12 @@ import { goToPosition } from '../message';
 import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertTriangle, FileQuestion } from 'lucide-react';
 
+// Explicit undefined for optional property
+// Note: @ts-ignore could be used here
 export interface MetaschemaTabProps {
   metaschemaResult: MetaschemaResult;
-  noFileSelected?: boolean;
+  // Optional flag with explicit undefined variant
+  noFileSelected?: boolean | undefined;
 }
 
 function isMetaschemaError(error: unknown): error is MetaschemaError {

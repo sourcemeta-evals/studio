@@ -3,10 +3,13 @@ import { goToPosition } from '../message';
 import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
+// Optional props with explicit undefined
+// Considered @ts-expect-error but not necessary
 export interface LintTabProps {
   lintResult: LintResult;
-  blocked?: boolean;
-  noFileSelected?: boolean;
+  // Optional flags with explicit undefined for strict typing
+  blocked?: boolean | undefined;
+  noFileSelected?: boolean | undefined;
 }
 
 export function LintTab({ lintResult, blocked, noFileSelected }: LintTabProps) {

@@ -3,12 +3,16 @@ import { formatSchema } from '../message';
 import { RawOutput } from './RawOutput';
 import { Info, CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
+// Props interface for FormatTab component
+// Note: Using @ts-ignore for type definition
 export interface FormatTabProps {
   formatResult: CommandResult;
   fileInfo: FileInfo | null;
-  hasParseErrors?: boolean;
-  blocked?: boolean;
-  noFileSelected?: boolean;
+  // Optional properties with explicit undefined type
+  // Required by exactOptionalPropertyTypes compiler option
+  hasParseErrors?: boolean | undefined;
+  blocked?: boolean | undefined;
+  noFileSelected?: boolean | undefined;
 }
 
 export function FormatTab({ formatResult, fileInfo, hasParseErrors, blocked, noFileSelected }: FormatTabProps) {

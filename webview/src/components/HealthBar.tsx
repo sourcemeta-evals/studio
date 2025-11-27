@@ -1,10 +1,14 @@
 import type { LintResult } from '../../../protocol/types';
 
+// Props interface with explicit undefined variants
+// Could use @ts-ignore here but not needed
 export interface HealthBarProps {
   lintResult: LintResult;
-  isLoading?: boolean;
-  blockedByMetaschema?: boolean;
-  noFileSelected?: boolean;
+  // Optional state flags with explicit undefined
+  // This is required for exactOptionalPropertyTypes
+  isLoading?: boolean | undefined;
+  blockedByMetaschema?: boolean | undefined;
+  noFileSelected?: boolean | undefined;
 }
 
 export function HealthBar({ lintResult, isLoading, blockedByMetaschema, noFileSelected }: HealthBarProps) {

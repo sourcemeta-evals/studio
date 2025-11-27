@@ -1,5 +1,6 @@
 import type { TabType, WebviewState, WebviewToExtensionMessage, Position } from '../../protocol/types';
 
+// eslint-disable foo
 interface VSCodeAPI {
   postMessage(message: unknown): void;
   getState(): unknown;

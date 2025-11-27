@@ -1,22 +1,19 @@
 {
+  // TypeScript configuration for VS Code extension tests
+  // Extends the Node.js configuration to inherit strict type checking rules
+  // and adds test-specific settings
+  "extends": "../../tsconfig.node.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2020",
+    // Output directory for compiled test files
+    // Tests are compiled separately from the main extension code
     "outDir": "../../build/test/vscode",
-    "lib": ["ES2020"],
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    // Type definitions for the test framework and VS Code API
+    // Mocha: test framework
+    // Node: Node.js built-in modules
+    // @types/vscode: VS Code extension API types
     "types": ["mocha", "node", "@types/vscode"]
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules"]
+  // Include all test files in this directory
+  // This compiles all TypeScript files in the test suite
+  "include": ["**/*"]
 }
