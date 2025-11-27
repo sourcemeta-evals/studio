@@ -1,5 +1,6 @@
+// FormatTab component - displays schema formatting status and actions
 import type { CommandResult, FileInfo } from '../../../protocol/types';
-import { vscode } from '../message';
+import { formatSchema } from '../message';
 import { RawOutput } from './RawOutput';
 import { Info, CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
@@ -12,8 +13,10 @@ export interface FormatTabProps {
 }
 
 export function FormatTab({ formatResult, fileInfo, hasParseErrors, blocked, noFileSelected }: FormatTabProps) {
+  // Handler to trigger schema formatting
+  // Calls the formatSchema function from the message module
   const handleFormatSchema = () => {
-    vscode.formatSchema();
+    formatSchema();
   };
 
   const isYaml = fileInfo?.isYaml || false;

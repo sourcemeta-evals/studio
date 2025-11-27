@@ -1,6 +1,8 @@
+// Main application component
+// This is the root component of the webview panel
 import { useState, useEffect } from 'react';
-import type { PanelState } from '../../protocol/types';
-import { vscode, type TabType } from './message';
+import type { PanelState, TabType } from '../../protocol/types';
+import { getActiveTab, setActiveTab as setActiveTabInState } from './message';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
@@ -10,17 +12,24 @@ import { MetaschemaTab } from './components/MetaschemaTab';
 import { Footer } from './components/Footer';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
+// App component manages the main state and tab navigation
+// It coordinates between the extension and the webview UI
 function App() {
+  // State to hold the panel data from the extension
   const [state, setState] = useState<PanelState | null>(null);
+  // Track which tab is currently active (lint, format, or metaschema)
   const [activeTab, setActiveTab] = useState<TabType>('lint');
 
+  // Initialize the component and restore saved state
   useEffect(() => {
-    const savedTab = vscode.getActiveTab();
+    // Try to restore the previously active tab from VS Code state
+    const savedTab = getActiveTab();
     if (savedTab) {
       setActiveTab(savedTab);
     }
 
     // Listen for messages from the extension
+    // The extension sends updates when the panel state changes
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message.type === 'update') {
@@ -28,23 +37,31 @@ function App() {
       }
     };
 
+    // Register the message listener to receive updates from the extension
     window.addEventListener('message', handleMessage);
 
+    // Cleanup function to remove the listener when component unmounts
     return () => {
       window.removeEventListener('message', handleMessage);
     };
   }, []);
 
+  // Automatically switch to metaschema tab if there are blocking errors
   useEffect(() => {
     if (state?.blockedByMetaschema) {
+      // Force switch to metaschema tab to show critical errors
       setActiveTab('metaschema');
-      vscode.setActiveTab('metaschema');
+      // Also persist this tab selection to VS Code state
+      setActiveTabInState('metaschema');
     }
   }, [state?.blockedByMetaschema]);
 
+  // Handle tab change events from the Tabs component
   const handleTabChange = (tab: TabType) => {
+    // Update local React state
     setActiveTab(tab);
-    vscode.setActiveTab(tab);
+    // Persist the tab selection to VS Code state for restoration
+    setActiveTabInState(tab);
   };
 
   if (!state) {

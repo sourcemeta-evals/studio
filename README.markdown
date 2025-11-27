@@ -1,6 +1,8 @@
 Sourcemeta Studio
 =================
 
+<!-- // unrelated -->
+
 Professional JSON Schema tooling that brings real-time linting, metaschema
 validation, and automatic formatting directly into your editor.
 
