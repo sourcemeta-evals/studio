@@ -60,9 +60,9 @@ function App() {
       <FileInfo fileInfo={state.fileInfo} />
       <HealthBar 
         lintResult={state.lintResult} 
-        isLoading={state.isLoading} 
-        blockedByMetaschema={state.blockedByMetaschema}
-        noFileSelected={state.noFileSelected}
+        isLoading={state.isLoading ?? false} 
+        blockedByMetaschema={state.blockedByMetaschema ?? false}
+        noFileSelected={state.noFileSelected ?? false}
       />
       <Tabs activeTab={activeTab} onTabChange={handleTabChange} state={state} />
       
@@ -73,9 +73,9 @@ function App() {
           <LoadingSpinner fileInfo={state.fileInfo} />
         ) : (
           <>
-            {activeTab === 'lint' && <LintTab lintResult={state.lintResult} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={state.hasParseErrors} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={state.noFileSelected} />}
+            {activeTab === 'lint' && <LintTab lintResult={state.lintResult} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected ?? false} />}
+            {activeTab === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={state.hasParseErrors ?? false} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected ?? false} />}
+            {activeTab === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={state.noFileSelected ?? false} />}
           </>
         )}
       </div>
