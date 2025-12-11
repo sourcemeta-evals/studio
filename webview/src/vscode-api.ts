@@ -1,9 +1,15 @@
+export type TabType = 'lint' | 'format' | 'metaschema';
+
+interface WebviewState {
+  activeTab?: TabType;
+}
+
 declare global {
   interface Window {
     acquireVsCodeApi: () => {
       postMessage(message: unknown): void;
-      getState(): unknown;
-      setState(state: unknown): void;
+      getState(): WebviewState | undefined;
+      setState(state: WebviewState): void;
     };
   }
 }
@@ -11,16 +17,25 @@ declare global {
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  public postMessage(message: unknown): void {
-    this.vsCodeApi.postMessage(message);
+  public openExternal(url: string): void {
+    this.vsCodeApi.postMessage({ command: 'openExternal', url });
   }
 
-  public getState(): unknown {
-    return this.vsCodeApi.getState();
+  public formatSchema(): void {
+    this.vsCodeApi.postMessage({ command: 'formatSchema' });
   }
 
-  public setState(state: unknown): void {
-    this.vsCodeApi.setState(state);
+  public goToPosition(position: [number, number, number, number]): void {
+    this.vsCodeApi.postMessage({ command: 'goToPosition', position });
+  }
+
+  public getActiveTab(): TabType | undefined {
+    const state = this.vsCodeApi.getState();
+    return state?.activeTab;
+  }
+
+  public setActiveTab(tab: TabType): void {
+    this.vsCodeApi.setState({ activeTab: tab });
   }
 }
 
