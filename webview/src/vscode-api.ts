@@ -1,3 +1,11 @@
+import type { WebviewMessage } from '../../shared/types.ts';
+
+type TabType = 'lint' | 'format' | 'metaschema';
+
+interface WebviewState {
+  activeTab?: TabType;
+}
+
 declare global {
   interface Window {
     acquireVsCodeApi: () => {
@@ -11,16 +19,37 @@ declare global {
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  public postMessage(message: unknown): void {
+  private postMessage(message: WebviewMessage): void {
     this.vsCodeApi.postMessage(message);
   }
 
-  public getState(): unknown {
-    return this.vsCodeApi.getState();
+  private getState(): WebviewState | undefined {
+    return this.vsCodeApi.getState() as WebviewState | undefined;
   }
 
-  public setState(state: unknown): void {
+  private setState(state: WebviewState): void {
     this.vsCodeApi.setState(state);
+  }
+
+  public openExternal(url: string): void {
+    this.postMessage({ command: 'openExternal', url });
+  }
+
+  public formatSchema(): void {
+    this.postMessage({ command: 'formatSchema' });
+  }
+
+  public goToPosition(position: [number, number, number, number]): void {
+    this.postMessage({ command: 'goToPosition', position });
+  }
+
+  public getActiveTab(): TabType | undefined {
+    const state = this.getState();
+    return state?.activeTab;
+  }
+
+  public setActiveTab(tab: TabType): void {
+    this.setState({ activeTab: tab });
   }
 }
 
