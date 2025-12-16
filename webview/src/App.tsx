@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { PanelState } from '../../protocol/types';
-import { vscode, type TabType } from './message';
+import type { PanelState, TabType } from '../../protocol/types';
+import { getActiveTab, setActiveTab } from './message';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
@@ -12,12 +12,12 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
   const [state, setState] = useState<PanelState | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('lint');
+  const [activeTab, setActiveTabState] = useState<TabType>('lint');
 
   useEffect(() => {
-    const savedTab = vscode.getActiveTab();
+    const savedTab = getActiveTab();
     if (savedTab) {
-      setActiveTab(savedTab);
+      setActiveTabState(savedTab);
     }
 
     // Listen for messages from the extension
@@ -37,14 +37,14 @@ function App() {
 
   useEffect(() => {
     if (state?.blockedByMetaschema) {
+      setActiveTabState('metaschema');
       setActiveTab('metaschema');
-      vscode.setActiveTab('metaschema');
     }
   }, [state?.blockedByMetaschema]);
 
   const handleTabChange = (tab: TabType) => {
+    setActiveTabState(tab);
     setActiveTab(tab);
-    vscode.setActiveTab(tab);
   };
 
   if (!state) {
