@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { PanelState } from '../../protocol/types';
-import { vscode, type TabType } from './message';
+import type { PanelState, TabType } from '../../protocol/types';
+import { getActiveTab, setActiveTab } from './message';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
@@ -12,12 +12,12 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
   const [state, setState] = useState<PanelState | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('lint');
+  const [activeTabState, setActiveTabState] = useState<TabType>('lint');
 
   useEffect(() => {
-    const savedTab = vscode.getActiveTab();
+    const savedTab = getActiveTab();
     if (savedTab) {
-      setActiveTab(savedTab);
+      setActiveTabState(savedTab);
     }
 
     // Listen for messages from the extension
@@ -37,14 +37,14 @@ function App() {
 
   useEffect(() => {
     if (state?.blockedByMetaschema) {
+      setActiveTabState('metaschema');
       setActiveTab('metaschema');
-      vscode.setActiveTab('metaschema');
     }
   }, [state?.blockedByMetaschema]);
 
   const handleTabChange = (tab: TabType) => {
+    setActiveTabState(tab);
     setActiveTab(tab);
-    vscode.setActiveTab(tab);
   };
 
   if (!state) {
@@ -64,18 +64,18 @@ function App() {
         blockedByMetaschema={state.blockedByMetaschema}
         noFileSelected={state.noFileSelected}
       />
-      <Tabs activeTab={activeTab} onTabChange={handleTabChange} state={state} />
+      <Tabs activeTab={activeTabState} onTabChange={handleTabChange} state={state} />
       
       <div className="flex-1 overflow-y-auto">
         {state.isLoading ? (
           <LoadingSpinner fileInfo={state.fileInfo} />
-        ) : state.formatLoading && activeTab === 'format' ? (
+        ) : state.formatLoading && activeTabState === 'format' ? (
           <LoadingSpinner fileInfo={state.fileInfo} />
         ) : (
           <>
-            {activeTab === 'lint' && <LintTab lintResult={state.lintResult} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={state.hasParseErrors} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={state.noFileSelected} />}
+            {activeTabState === 'lint' && <LintTab lintResult={state.lintResult} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
+            {activeTabState === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={state.hasParseErrors} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
+            {activeTabState === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={state.noFileSelected} />}
           </>
         )}
       </div>
