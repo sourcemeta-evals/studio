@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { PanelState } from '../../protocol/types';
-import { vscode, type TabType } from './message';
+import type { TabType } from '../../protocol/types';
+import { getActiveTab, setActiveTab as persistActiveTab } from './message';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
@@ -15,7 +16,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabType>('lint');
 
   useEffect(() => {
-    const savedTab = vscode.getActiveTab();
+    const savedTab = getActiveTab();
     if (savedTab) {
       setActiveTab(savedTab);
     }
@@ -38,13 +39,13 @@ function App() {
   useEffect(() => {
     if (state?.blockedByMetaschema) {
       setActiveTab('metaschema');
-      vscode.setActiveTab('metaschema');
+      persistActiveTab('metaschema');
     }
   }, [state?.blockedByMetaschema]);
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
-    vscode.setActiveTab(tab);
+    persistActiveTab(tab);
   };
 
   if (!state) {
