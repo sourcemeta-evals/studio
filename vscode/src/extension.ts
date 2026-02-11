@@ -78,7 +78,7 @@ function handleWebviewMessage(message: WebviewToExtensionMessage): void {
         const range = errorPositionToRange(message.position);
 
         vscode.window.showTextDocument(lastActiveTextEditor.document, {
-            viewColumn: lastActiveTextEditor.viewColumn,
+            viewColumn: lastActiveTextEditor.viewColumn ?? vscode.ViewColumn.One,
             preserveFocus: false
         }).then((editor) => {
             editor.selection = new vscode.Selection(range.start, range.end);
