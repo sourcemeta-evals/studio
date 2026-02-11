@@ -1,0 +1,13 @@
+{
+  "name": "@sourcemeta/studio-test-webview",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tests for Sourcemeta Studio webview",
+  "scripts": {
+    "test": "tsx --test ./*.test.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "~5.9.3"
+  }
+}
