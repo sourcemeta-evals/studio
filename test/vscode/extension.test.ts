@@ -1,6 +1,52 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
+import type { Position, LintError, MetaschemaError } from '../../protocol/cli';
+
+suite('Position Type Suite', () => {
+    test('Position type should be usable in LintError', () => {
+        const pos: Position = [1, 2, 3, 4];
+        const error: LintError = {
+            id: 'test',
+            message: 'test error',
+            path: '/',
+            schemaLocation: '/',
+            position: pos
+        };
+        assert.deepStrictEqual(error.position, [1, 2, 3, 4]);
+    });
+
+    test('LintError position can be null', () => {
+        const error: LintError = {
+            id: 'test',
+            message: 'test error',
+            path: '/',
+            schemaLocation: '/',
+            position: null
+        };
+        assert.strictEqual(error.position, null);
+    });
+
+    test('Position type should be usable in MetaschemaError', () => {
+        const pos: Position = [10, 5, 10, 20];
+        const error: MetaschemaError = {
+            error: 'validation error',
+            instanceLocation: '/foo',
+            keywordLocation: '/bar',
+            instancePosition: pos
+        };
+        assert.deepStrictEqual(error.instancePosition, [10, 5, 10, 20]);
+    });
+
+    test('MetaschemaError instancePosition is optional', () => {
+        const error: MetaschemaError = {
+            error: 'validation error',
+            instanceLocation: '/foo',
+            keywordLocation: '/bar'
+        };
+        assert.strictEqual(error.instancePosition, undefined);
+    });
+});
 
 suite('Extension Test Suite', () => {
     vscode.window.showInformationMessage('Start all tests.');
