@@ -76,7 +76,7 @@ export function getFileInfo(filePath: string | undefined): FileInfo | null {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     let displayPath = filePath;
 
-    if (workspaceFolders && workspaceFolders.length > 0) {
+    if (workspaceFolders && workspaceFolders.length > 0 && workspaceFolders[0] !== undefined) {
         const workspaceRoot = workspaceFolders[0].uri.fsPath;
         if (filePath.startsWith(workspaceRoot)) {
             displayPath = path.relative(workspaceRoot, filePath);
