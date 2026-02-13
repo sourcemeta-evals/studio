@@ -1,15 +1,16 @@
 import type { PanelState } from '../../../shared/types.ts';
+import type { TabId } from '../vscode-api';
 import type { LucideIcon } from 'lucide-react';
 import { calculateLintStatus, calculateFormatStatus, calculateMetaschemaStatus } from '../utils/tabStatus';
 
 export interface TabsProps {
-  activeTab: 'lint' | 'format' | 'metaschema';
-  onTabChange: (tab: 'lint' | 'format' | 'metaschema') => void;
+  activeTab: TabId;
+  onTabChange: (tab: TabId) => void;
   state: PanelState;
 }
 
 interface TabProps {
-  id: 'lint' | 'format' | 'metaschema';
+  id: TabId;
   label: string;
   Icon: LucideIcon | null;
   color: string;
