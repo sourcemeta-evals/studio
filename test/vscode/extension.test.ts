@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
+import type { Position, LintError, MetaschemaError, WebviewToExtensionMessage } from '../../protocol/types';
 
 suite('Extension Test Suite', () => {
     vscode.window.showInformationMessage('Start all tests.');
@@ -101,6 +102,39 @@ suite('Extension Test Suite', () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         assert.ok(true, 'Extension should handle no file selected without errors');
+    });
+
+    test('Position type should be compatible with LintError.position', () => {
+        const position: Position = [1, 2, 3, 4];
+        const error: LintError = {
+            id: 'test',
+            message: 'test',
+            path: '/',
+            schemaLocation: '/',
+            position
+        };
+        assert.deepStrictEqual(error.position, [1, 2, 3, 4]);
+    });
+
+    test('Position type should be compatible with MetaschemaError.instancePosition', () => {
+        const position: Position = [10, 5, 10, 20];
+        const error: MetaschemaError = {
+            error: 'test error',
+            instanceLocation: '/',
+            keywordLocation: '/',
+            instancePosition: position
+        };
+        assert.deepStrictEqual(error.instancePosition, [10, 5, 10, 20]);
+    });
+
+    test('Position type should be compatible with WebviewToExtensionMessage.position', () => {
+        const position: Position = [1, 1, 1, 1];
+        const message: WebviewToExtensionMessage = {
+            command: 'goToPosition',
+            position
+        };
+        assert.deepStrictEqual(message.position, [1, 1, 1, 1]);
+        assert.strictEqual(message.command, 'goToPosition');
     });
 
     test('Should show appropriate message when no file is selected', async function() {
