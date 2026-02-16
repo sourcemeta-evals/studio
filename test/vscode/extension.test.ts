@@ -1,6 +1,70 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
+import type { Position, LintError, MetaschemaError, WebviewToExtensionMessage } from '../../protocol/types';
+
+suite('Position Type Suite', () => {
+    test('Position type should be assignable as a 4-element number tuple', () => {
+        const pos: Position = [1, 2, 3, 4];
+        assert.strictEqual(pos.length, 4);
+        assert.strictEqual(pos[0], 1);
+        assert.strictEqual(pos[1], 2);
+        assert.strictEqual(pos[2], 3);
+        assert.strictEqual(pos[3], 4);
+    });
+
+    test('LintError position should accept Position type', () => {
+        const error: LintError = {
+            id: 'test-rule',
+            message: 'test error',
+            path: '/',
+            schemaLocation: '/',
+            position: [1, 1, 1, 10]
+        };
+        assert.ok(error.position);
+        assert.strictEqual(error.position[0], 1);
+    });
+
+    test('LintError position should accept null', () => {
+        const error: LintError = {
+            id: 'test-rule',
+            message: 'test error',
+            path: '/',
+            schemaLocation: '/',
+            position: null
+        };
+        assert.strictEqual(error.position, null);
+    });
+
+    test('MetaschemaError instancePosition should accept Position type', () => {
+        const error: MetaschemaError = {
+            error: 'test error',
+            instanceLocation: '/',
+            keywordLocation: '/',
+            instancePosition: [5, 3, 5, 20]
+        };
+        assert.ok(error.instancePosition);
+        assert.strictEqual(error.instancePosition[0], 5);
+    });
+
+    test('MetaschemaError instancePosition should be optional', () => {
+        const error: MetaschemaError = {
+            error: 'test error',
+            instanceLocation: '/',
+            keywordLocation: '/'
+        };
+        assert.strictEqual(error.instancePosition, undefined);
+    });
+
+    test('WebviewToExtensionMessage position should accept Position type', () => {
+        const msg: WebviewToExtensionMessage = {
+            command: 'goToPosition',
+            position: [10, 1, 10, 5]
+        };
+        assert.ok(msg.position);
+        assert.strictEqual(msg.position[0], 10);
+    });
+});
 
 suite('Extension Test Suite', () => {
     vscode.window.showInformationMessage('Start all tests.');
