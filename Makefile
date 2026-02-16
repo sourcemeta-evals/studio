@@ -6,12 +6,15 @@ UNZIP = unzip
 MKDIR = mkdir
 JQ = jq
 
-all: webview vscode vscode-test vscode-package
+all: webview webview-test vscode vscode-test vscode-package
 
 webview: .always
 	cd webview && $(NPM) ci
 	cd webview && $(NPM) run lint
 	cd webview && $(NPM) run build
+
+webview-test: .always
+	node --experimental-strip-types --test test/webview/message.test.mjs
 
 vscode: .always
 	cd vscode && $(NPM) ci
