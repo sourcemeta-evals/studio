@@ -128,7 +128,7 @@ export function parseLintResult(lintOutput: string): LintResult {
                     description: description,
                     path: '/',
                     schemaLocation: '/',
-                    position: [parsed.line, parsed.column, parsed.line, parsed.column]
+                    position: [parsed.line, parsed.column, parsed.line, parsed.column] as Position
                 }]
             };
         }
@@ -154,7 +154,7 @@ export function parseLintResult(lintOutput: string): LintResult {
                     description: description,
                     path: parsed.location || '/',
                     schemaLocation: parsed.identifier || '/',
-                    position: hasPosition ? [parsed.line, parsed.column, parsed.line, parsed.column] : null
+                    position: hasPosition ? [parsed.line, parsed.column, parsed.line, parsed.column] as Position : null
                 }]
             };
         }
@@ -191,7 +191,7 @@ export function parseMetaschemaResult(output: string, exitCode: number | null): 
                 keywordLocation: '/',
                 absoluteKeywordLocation: cliError.identifier,
                 instancePosition: cliError.line && cliError.column 
-                    ? [cliError.line, cliError.column, cliError.line, cliError.column] 
+                    ? [cliError.line, cliError.column, cliError.line, cliError.column] as Position
                     : undefined
             }];
             return result;
