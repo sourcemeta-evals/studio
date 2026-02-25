@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -119,5 +121,47 @@ suite('Extension Test Suite', () => {
 
         assert.ok(extension, 'Extension should exist');
         assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
+    });
+
+    test('Webview VSCode API wrapper should expose only high-level methods', () => {
+        const vscodeApiPath = path.resolve(__dirname, '../../../webview/src/vscode-api.ts');
+        const appPath = path.resolve(__dirname, '../../../webview/src/App.tsx');
+        const footerPath = path.resolve(__dirname, '../../../webview/src/components/Footer.tsx');
+        const formatTabPath = path.resolve(__dirname, '../../../webview/src/components/FormatTab.tsx');
+        const lintTabPath = path.resolve(__dirname, '../../../webview/src/components/LintTab.tsx');
+        const metaschemaTabPath = path.resolve(__dirname, '../../../webview/src/components/MetaschemaTab.tsx');
+
+        const vscodeApiSource = fs.readFileSync(vscodeApiPath, 'utf8');
+        const appSource = fs.readFileSync(appPath, 'utf8');
+        const footerSource = fs.readFileSync(footerPath, 'utf8');
+        const formatTabSource = fs.readFileSync(formatTabPath, 'utf8');
+        const lintTabSource = fs.readFileSync(lintTabPath, 'utf8');
+        const metaschemaTabSource = fs.readFileSync(metaschemaTabPath, 'utf8');
+
+        assert.match(vscodeApiSource, /public openExternal\(/);
+        assert.match(vscodeApiSource, /public formatSchema\(/);
+        assert.match(vscodeApiSource, /public goToPosition\(/);
+        assert.match(vscodeApiSource, /public getActiveTab\(/);
+        assert.match(vscodeApiSource, /public setActiveTab\(/);
+
+        assert.doesNotMatch(vscodeApiSource, /public postMessage\(/);
+        assert.doesNotMatch(vscodeApiSource, /public getState\(/);
+        assert.doesNotMatch(vscodeApiSource, /public setState\(/);
+
+        assert.match(appSource, /vscode\.getActiveTab\(/);
+        assert.match(appSource, /vscode\.setActiveTab\(/);
+        assert.doesNotMatch(appSource, /vscode\.(getState|setState)\(/);
+
+        assert.doesNotMatch(footerSource, /vscode\.postMessage\(/);
+        assert.match(footerSource, /vscode\.openExternal\(/g);
+
+        assert.match(formatTabSource, /vscode\.formatSchema\(/);
+        assert.doesNotMatch(formatTabSource, /vscode\.postMessage\(/);
+
+        assert.match(lintTabSource, /vscode\.goToPosition\(/);
+        assert.doesNotMatch(lintTabSource, /vscode\.postMessage\(/);
+
+        assert.match(metaschemaTabSource, /vscode\.goToPosition\(/);
+        assert.doesNotMatch(metaschemaTabSource, /vscode\.postMessage\(/);
     });
 });
