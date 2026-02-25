@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -119,5 +121,44 @@ suite('Extension Test Suite', () => {
 
         assert.ok(extension, 'Extension should exist');
         assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
+    });
+
+    test('Should encapsulate VSCode webview messaging and state in vscode-api wrapper', () => {
+        const webviewSourceDir = path.resolve(__dirname, '../../../webview/src');
+        const vscodeApiSource = fs.readFileSync(path.join(webviewSourceDir, 'vscode-api.ts'), 'utf8');
+
+        for (const method of ['openExternal', 'formatSchema', 'goToPosition', 'getActiveTab', 'setActiveTab']) {
+            assert.match(vscodeApiSource, new RegExp(`public ${method}\\(`), `Expected public method ${method}`);
+        }
+
+        for (const method of ['postMessage', 'getState', 'setState']) {
+            assert.ok(!new RegExp(`public ${method}\\(`).test(vscodeApiSource), `Did not expect public method ${method}`);
+        }
+
+        const collectWebviewSourceFiles = (directory: string): string[] => {
+            const files: string[] = [];
+            for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+                const fullPath = path.join(directory, entry.name);
+                if (entry.isDirectory()) {
+                    files.push(...collectWebviewSourceFiles(fullPath));
+                    continue;
+                }
+                if (fullPath.endsWith('.ts') || fullPath.endsWith('.tsx')) {
+                    files.push(fullPath);
+                }
+            }
+            return files;
+        };
+
+        const webviewFiles = collectWebviewSourceFiles(webviewSourceDir)
+            .filter((file) => !file.endsWith('vscode-api.ts'));
+
+        for (const file of webviewFiles) {
+            const content = fs.readFileSync(file, 'utf8');
+            assert.ok(
+                !/vscode\.(postMessage|getState|setState)\(/.test(content),
+                `Found direct VSCode low-level API usage in ${path.relative(webviewSourceDir, file)}`
+            );
+        }
     });
 });
