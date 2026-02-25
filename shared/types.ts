@@ -61,6 +61,8 @@ export interface MetaschemaResult extends CommandResult {
 
 export type FormatResult = CommandResult;
 
+export type ActiveTab = 'lint' | 'format' | 'metaschema';
+
 export interface PanelState {
     fileInfo: FileInfo | null;
     cliVersion: string;
