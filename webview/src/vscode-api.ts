@@ -8,19 +8,30 @@ declare global {
   }
 }
 
+export type TabName = 'lint' | 'format' | 'metaschema';
+
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  public postMessage(message: unknown): void {
-    this.vsCodeApi.postMessage(message);
+  public openExternal(url: string): void {
+    this.vsCodeApi.postMessage({ command: 'openExternal', url });
   }
 
-  public getState(): unknown {
-    return this.vsCodeApi.getState();
+  public formatSchema(): void {
+    this.vsCodeApi.postMessage({ command: 'formatSchema' });
   }
 
-  public setState(state: unknown): void {
-    this.vsCodeApi.setState(state);
+  public goToPosition(position: [number, number, number, number]): void {
+    this.vsCodeApi.postMessage({ command: 'goToPosition', position });
+  }
+
+  public getActiveTab(): TabName | undefined {
+    const state = this.vsCodeApi.getState() as { activeTab?: TabName } | undefined;
+    return state?.activeTab;
+  }
+
+  public setActiveTab(tab: TabName): void {
+    this.vsCodeApi.setState({ activeTab: tab });
   }
 }
 

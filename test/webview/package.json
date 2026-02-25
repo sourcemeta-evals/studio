@@ -1,0 +1,13 @@
+{
+  "name": "@sourcemeta/studio-test-webview",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tests for Sourcemeta Studio webview",
+  "type": "module",
+  "scripts": {
+    "test": "node --test vscode-api.test.js"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}
