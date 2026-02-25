@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -119,5 +121,15 @@ suite('Extension Test Suite', () => {
 
         assert.ok(extension, 'Extension should exist');
         assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
+    });
+
+    test('Message module should export direct helpers without wrappers', () => {
+        const messageModulePath = path.resolve(__dirname, '../../../webview/src/message.ts');
+        const messageModuleSource = fs.readFileSync(messageModulePath, 'utf8');
+
+        assert.ok(messageModuleSource.includes('export function goToPosition'), 'goToPosition should be exported directly');
+        assert.ok(messageModuleSource.includes('export function openExternal'), 'openExternal should be exported directly');
+        assert.ok(!messageModuleSource.includes('export const vscode'), 'vscode wrapper export should not exist');
+        assert.ok(!messageModuleSource.includes('export type { TabType }'), 'TabType re-export should not exist');
     });
 });
