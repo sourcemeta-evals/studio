@@ -1,5 +1,11 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import type {
+    Position,
+    WebviewToExtensionMessage,
+    LintError,
+    MetaschemaError
+} from '../../protocol/types';
 import testSchema from './fixtures/test-schema.json';
 
 suite('Extension Test Suite', () => {
@@ -27,6 +33,34 @@ suite('Extension Test Suite', () => {
         const commands = await vscode.commands.getCommands(true);
         const commandExists = commands.includes('sourcemeta-studio.openPanel');
         assert.ok(commandExists, 'Command "sourcemeta-studio.openPanel" should be registered');
+    });
+
+    test('Should support shared Position type across protocol messages and errors', () => {
+        const position: Position = [1, 2, 3, 4];
+
+        const message: WebviewToExtensionMessage = {
+            command: 'goToPosition',
+            position
+        };
+
+        const lintError: LintError = {
+            id: 'rule-id',
+            message: 'Lint error',
+            path: '/',
+            schemaLocation: '#/',
+            position
+        };
+
+        const metaschemaError: MetaschemaError = {
+            error: 'Validation error',
+            instanceLocation: '/',
+            keywordLocation: '#/',
+            instancePosition: position
+        };
+
+        assert.deepStrictEqual(message.position, position);
+        assert.deepStrictEqual(lintError.position, position);
+        assert.deepStrictEqual(metaschemaError.instancePosition, position);
     });
 
     test('Should create diagnostic collections', async () => {
