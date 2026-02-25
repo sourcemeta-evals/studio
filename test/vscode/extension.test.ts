@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import type { Position, WebviewToExtensionMessage } from '../../protocol/types';
 import testSchema from './fixtures/test-schema.json';
 
 suite('Extension Test Suite', () => {
@@ -37,6 +38,13 @@ suite('Extension Test Suite', () => {
 
         const diagnostics = vscode.languages.getDiagnostics();
         assert.ok(Array.isArray(diagnostics), 'Diagnostics should be available');
+    });
+
+    test('Should support protocol Position type in webview messages', () => {
+        const position: Position = [1, 2, 3, 4];
+        const message: WebviewToExtensionMessage = { command: 'goToPosition', position };
+
+        assert.deepStrictEqual(message.position, [1, 2, 3, 4], 'Position should preserve 4-tuple coordinates');
     });
 
     test('Should open panel when command is executed', async function() {
