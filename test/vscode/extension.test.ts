@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -119,5 +121,19 @@ suite('Extension Test Suite', () => {
 
         assert.ok(extension, 'Extension should exist');
         assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
+    });
+
+    test('Webview message module exports direct methods', () => {
+        const repoRoot = path.resolve(__dirname, '../../..');
+        const messageModulePath = path.join(repoRoot, 'webview', 'src', 'message.ts');
+        const source = fs.readFileSync(messageModulePath, 'utf8');
+
+        assert.ok(source.includes('export function goToPosition('), 'message module should export goToPosition directly');
+        assert.ok(source.includes('export function openExternal('), 'message module should export openExternal directly');
+        assert.ok(source.includes('export function formatSchema('), 'message module should export formatSchema directly');
+        assert.ok(source.includes('export function getActiveTab('), 'message module should export getActiveTab directly');
+        assert.ok(source.includes('export function setActiveTab('), 'message module should export setActiveTab directly');
+        assert.ok(!source.includes('export const vscode ='), 'message module should not export a vscode wrapper');
+        assert.ok(!source.includes('export type { TabType }'), 'message module should not re-export TabType');
     });
 });
