@@ -14,7 +14,7 @@ webview: .always
 	cd webview && $(NPM) run build
 
 webview-test: .always
-	cd test/webview && $(NPM) install
+	cd test/webview && $(NPM) ci
 	cd test/webview && $(NPM) test
 
 vscode: .always
