@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -8,6 +10,15 @@ suite('Extension Test Suite', () => {
     test('Extension should be present', () => {
         const extension = vscode.extensions.getExtension('sourcemeta.sourcemeta-studio');
         assert.ok(extension, 'Extension should be installed');
+    });
+
+    test('Webview message module should export functions directly', () => {
+        const messageModulePath = path.resolve(__dirname, '../../../webview/src/message.ts');
+        const source = fs.readFileSync(messageModulePath, 'utf8');
+
+        assert.ok(source.includes('export function goToPosition'), 'message.ts should export goToPosition directly');
+        assert.ok(!source.includes('export const vscode ='), 'message.ts should not export a vscode wrapper');
+        assert.ok(!source.includes('export type { TabType };'), 'message.ts should not re-export TabType');
     });
 
     test('Should activate extension', async () => {
