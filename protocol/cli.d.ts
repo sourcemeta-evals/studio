@@ -3,6 +3,11 @@
  * Types that represent CLI command results and errors
  */
 
+/**
+ * Represents a position range in a document.
+ * Format: [startLine, startColumn, endLine, endColumn]
+ * All values are 1-based (lines and columns start at 1, not 0).
+ */
 export type Position = [number, number, number, number];
 
 export interface LintError {
