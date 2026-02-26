@@ -3,6 +3,16 @@
  * Types that represent CLI command results and errors
  */
 
+/**
+ * Represents a single point in a document with line and column coordinates.
+ * Values are 1-based: [line, column]
+ */
+export type Point = [number, number];
+
+/**
+ * Represents a range/position in a document with start and end coordinates.
+ * Values are 1-based: [startLine, startColumn, endLine, endColumn]
+ */
 export type Position = [number, number, number, number];
 
 export interface LintError {

@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { FileInfo, LintResult, MetaschemaResult, CliError, Position } from '../../../protocol/types';
+import { FileInfo, LintResult, MetaschemaResult, CliError, Position, Point } from '../../../protocol/types';
 
 /**
  * Parse generic CLI error response from JSON output
@@ -248,14 +248,14 @@ export function escapeHtml(text: string): string {
 /**
  * Convert VS Code position to 1-based array format
  */
-export function positionToArray(position: vscode.Position): [number, number] {
+export function positionToArray(position: vscode.Position): Point {
     return [position.line + 1, position.character + 1];
 }
 
 /**
  * Convert 1-based array format to VS Code position
  */
-export function arrayToPosition(arr: [number, number]): vscode.Position {
+export function arrayToPosition(arr: Point): vscode.Position {
     return new vscode.Position(arr[0] - 1, arr[1] - 1);
 }
 
