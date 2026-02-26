@@ -1,4 +1,4 @@
-import { openExternal } from '../message';
+import { openExternal } from '../vscode-api';
 import { Star, Bug } from 'lucide-react';
 
 export interface FooterProps {

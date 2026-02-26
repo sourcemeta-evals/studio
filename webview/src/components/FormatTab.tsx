@@ -1,5 +1,5 @@
 import type { CommandResult, FileInfo } from '../../../protocol/types';
-import { formatSchema } from '../message';
+import { formatSchema } from '../vscode-api';
 import { RawOutput } from './RawOutput';
 import { Info, CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
