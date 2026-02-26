@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { PanelState, TabType } from '../../protocol/types';
-import { getActiveTab, setActiveTab as setActiveTabInState } from './message';
+import { getActiveTab, setActiveTab as setActiveTabInState, subscribeToStateUpdates } from './vscode-api';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
@@ -20,19 +20,12 @@ function App() {
       setActiveTab(savedTab);
     }
 
-    // Listen for messages from the extension
-    const handleMessage = (event: MessageEvent) => {
-      const message = event.data;
-      if (message.type === 'update') {
-        setState(message.state);
-      }
-    };
+    // Subscribe to state updates from the extension
+    const unsubscribe = subscribeToStateUpdates((newState) => {
+      setState(newState);
+    });
 
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
