@@ -1,4 +1,6 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
@@ -15,6 +17,21 @@ suite('Extension Test Suite', () => {
         if (extension) {
             await extension.activate();
             assert.ok(extension.isActive, 'Extension should be active');
+        }
+    });
+
+    test('webview message module should export direct functions', () => {
+        const messageModulePath = path.resolve(__dirname, '../../../webview/src/message.ts');
+        const source = fs.readFileSync(messageModulePath, 'utf8');
+
+        assert.ok(!/export\s+const\s+vscode\b/.test(source), 'message.ts should not export a vscode wrapper');
+        assert.ok(!/export\s+type\s*\{\s*TabType\s*\}/.test(source), 'message.ts should not re-export TabType');
+
+        for (const methodName of ['openExternal', 'formatSchema', 'goToPosition', 'getActiveTab', 'setActiveTab']) {
+            assert.ok(
+                new RegExp(`export\\s+function\\s+${methodName}\\b`).test(source),
+                `message.ts should export ${methodName} directly`
+            );
         }
     });
 
