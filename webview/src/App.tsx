@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { PanelState, TabType } from '../../protocol/types';
-import { getActiveTab, setActiveTab as setActiveTabInState } from './message';
+import { getActiveTab, setActiveTab as setActiveTabInState } from './vscode-api';
 import { FileInfo } from './components/FileInfo';
 import { HealthBar } from './components/HealthBar';
 import { Tabs } from './components/Tabs';
