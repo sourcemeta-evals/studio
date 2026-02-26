@@ -55,27 +55,32 @@ function App() {
     );
   }
 
+  const isLoading = state.isLoading ?? false;
+  const blockedByMetaschema = state.blockedByMetaschema ?? false;
+  const noFileSelected = state.noFileSelected ?? false;
+  const hasParseErrors = state.hasParseErrors ?? false;
+
   return (
     <div className="flex flex-col h-screen p-5">
       <FileInfo fileInfo={state.fileInfo} />
-      <HealthBar 
-        lintResult={state.lintResult} 
-        isLoading={state.isLoading} 
-        blockedByMetaschema={state.blockedByMetaschema}
-        noFileSelected={state.noFileSelected}
+      <HealthBar
+        lintResult={state.lintResult}
+        isLoading={isLoading}
+        blockedByMetaschema={blockedByMetaschema}
+        noFileSelected={noFileSelected}
       />
       <Tabs activeTab={activeTab} onTabChange={handleTabChange} state={state} />
       
       <div className="flex-1 overflow-y-auto">
-        {state.isLoading ? (
+        {isLoading ? (
           <LoadingSpinner fileInfo={state.fileInfo} />
         ) : state.formatLoading && activeTab === 'format' ? (
           <LoadingSpinner fileInfo={state.fileInfo} />
         ) : (
           <>
-            {activeTab === 'lint' && <LintTab lintResult={state.lintResult} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={state.hasParseErrors} blocked={!!state.blockedByMetaschema} noFileSelected={state.noFileSelected} />}
-            {activeTab === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={state.noFileSelected} />}
+            {activeTab === 'lint' && <LintTab lintResult={state.lintResult} blocked={blockedByMetaschema} noFileSelected={noFileSelected} />}
+            {activeTab === 'format' && <FormatTab formatResult={state.formatResult} fileInfo={state.fileInfo} hasParseErrors={hasParseErrors} blocked={blockedByMetaschema} noFileSelected={noFileSelected} />}
+            {activeTab === 'metaschema' && <MetaschemaTab metaschemaResult={state.metaschemaResult} noFileSelected={noFileSelected} />}
           </>
         )}
       </div>
