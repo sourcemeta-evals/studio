@@ -2,7 +2,7 @@ import type { FileInfo } from '../../../protocol/types';
 import { AlertTriangle } from 'lucide-react';
 
 export interface LoadingSpinnerProps {
-  fileInfo?: FileInfo | null;
+  fileInfo?: FileInfo | null | undefined;
 }
 
 export function LoadingSpinner({ fileInfo }: LoadingSpinnerProps) {
