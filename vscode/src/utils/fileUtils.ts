@@ -77,9 +77,12 @@ export function getFileInfo(filePath: string | undefined): FileInfo | null {
     let displayPath = filePath;
 
     if (workspaceFolders && workspaceFolders.length > 0) {
-        const workspaceRoot = workspaceFolders[0].uri.fsPath;
-        if (filePath.startsWith(workspaceRoot)) {
-            displayPath = path.relative(workspaceRoot, filePath);
+        const firstWorkspaceFolder = workspaceFolders[0];
+        if (firstWorkspaceFolder) {
+            const workspaceRoot = firstWorkspaceFolder.uri.fsPath;
+            if (filePath.startsWith(workspaceRoot)) {
+                displayPath = path.relative(workspaceRoot, filePath);
+            }
         }
     }
 
