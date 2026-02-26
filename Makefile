@@ -6,7 +6,7 @@ UNZIP = unzip
 MKDIR = mkdir
 JQ = jq
 
-all: webview vscode vscode-test vscode-package
+all: webview vscode webview-test vscode-test vscode-package
 
 webview: .always
 	cd webview && $(NPM) ci
@@ -29,6 +29,10 @@ vscode: .always
 vscode-test: .always
 	cd test/vscode && $(NPM) ci
 	cd test/vscode && $(NPM) test
+
+webview-test: .always
+	cd test/webview && $(NPM) ci
+	cd test/webview && $(NPM) test
 
 vscode-package: .always
 	$(MKDIR) -p build/dist

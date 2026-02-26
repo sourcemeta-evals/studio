@@ -1,5 +1,5 @@
 import type { MetaschemaResult, MetaschemaError, Position } from '../../../protocol/types';
-import { goToPosition } from '../message';
+import { goToPosition } from '../vscode-api';
 import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertTriangle, FileQuestion } from 'lucide-react';
 
