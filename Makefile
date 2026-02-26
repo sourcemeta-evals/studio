@@ -6,7 +6,7 @@ UNZIP = unzip
 MKDIR = mkdir
 JQ = jq
 
-all: webview vscode vscode-test vscode-package
+all: webview vscode vscode-test webview-test vscode-package
 
 webview: .always
 	cd webview && $(NPM) ci
@@ -25,6 +25,11 @@ vscode: .always
 	$(INSTALL) -m 0664 vscode/package.json build/vscode/package.json
 	$(JQ) '.main = "./extension.js"' vscode/package.json > build/vscode/package.json
 	$(INSTALL) -m 0664 vscode/package-lock.json build/vscode/package-lock.json
+
+webview-test: .always
+	ln -sf $(PWD)/test/vscode/node_modules test/webview/node_modules
+	cd test/webview && $(NPX) tsc -p ./
+	cd test/webview && $(NPX) mocha --ui tdd '../../build/test/webview/test/webview/**/*.test.js'
 
 vscode-test: .always
 	cd test/vscode && $(NPM) ci
