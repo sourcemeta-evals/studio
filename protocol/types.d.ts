@@ -4,6 +4,7 @@
  */
 
 import type {
+  Point,
   Position,
   LintResult,
   FormatResult,
@@ -25,6 +26,7 @@ export interface FileInfo {
 }
 
 export type {
+  Point,
   Position,
   LintError,
   LintResult,
