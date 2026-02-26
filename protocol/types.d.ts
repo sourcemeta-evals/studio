@@ -7,7 +7,8 @@ import type {
   Position,
   LintResult,
   FormatResult,
-  MetaschemaResult
+  MetaschemaResult,
+  Position
 } from './cli';
 
 export type TabType = 'lint' | 'format' | 'metaschema';
@@ -32,7 +33,8 @@ export type {
   MetaschemaError,
   CliError,
   MetaschemaResult,
-  FormatResult
+  FormatResult,
+  Position
 } from './cli';
 
 export interface PanelState {
