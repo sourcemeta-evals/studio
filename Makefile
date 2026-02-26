@@ -11,6 +11,7 @@ all: webview vscode vscode-test vscode-package
 webview: .always
 	cd webview && $(NPM) ci
 	cd webview && $(NPM) run lint
+	cd webview && $(NPM) test
 	cd webview && $(NPM) run build
 
 vscode: .always
