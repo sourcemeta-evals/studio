@@ -1,4 +1,4 @@
-import type { TabType, WebviewState, WebviewToExtensionMessage, Position } from '../../protocol/types';
+import type { TabType, WebviewState, WebviewToExtensionMessage, Position, PanelState } from '../../protocol/types';
 
 interface VSCodeAPI {
   postMessage(message: unknown): void;
@@ -14,9 +14,12 @@ declare global {
 
 const vsCodeApi = window.acquireVsCodeApi();
 
+// Internal function - not exported
 function postMessage(message: WebviewToExtensionMessage): void {
   vsCodeApi.postMessage(message);
 }
+
+// Higher-level methods exposed to the webview
 
 export function openExternal(url: string): void {
   postMessage({ command: 'openExternal', url });
@@ -37,4 +40,23 @@ export function getActiveTab(): TabType | undefined {
 
 export function setActiveTab(tab: TabType): void {
   vsCodeApi.setState({ activeTab: tab } satisfies WebviewState);
+}
+
+// State update subscription - encapsulates the message event listener
+type StateUpdateCallback = (state: PanelState) => void;
+
+export function subscribeToStateUpdates(callback: StateUpdateCallback): () => void {
+  const handleMessage = (event: MessageEvent) => {
+    const message = event.data;
+    if (message.type === 'update') {
+      callback(message.state);
+    }
+  };
+
+  window.addEventListener('message', handleMessage);
+
+  // Return cleanup function
+  return () => {
+    window.removeEventListener('message', handleMessage);
+  };
 }
