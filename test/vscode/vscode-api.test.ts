@@ -9,8 +9,24 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Find the workspace root by traversing up from the build directory
+function findWorkspaceRoot(): string {
+  // __dirname is build/test/vscode in CI
+  // We need to go up to find the workspace root
+  let dir = __dirname;
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, 'webview', 'src', 'vscode-api.ts'))) {
+      return dir;
+    }
+    dir = path.dirname(dir);
+  }
+  // Fallback: try process.cwd() which is typically the workspace root in CI
+  return process.cwd();
+}
+
 suite('VS Code API Encapsulation Tests', () => {
-  const vscodeApiPath = path.resolve(__dirname, '../../../../webview/src/vscode-api.ts');
+  const workspaceRoot = findWorkspaceRoot();
+  const vscodeApiPath = path.join(workspaceRoot, 'webview', 'src', 'vscode-api.ts');
   let vscodeApiContent: string;
 
   suiteSetup(() => {
