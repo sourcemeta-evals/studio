@@ -1,0 +1,15 @@
+{
+  "name": "@sourcemeta/studio-test-webview",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tests for Sourcemeta Studio webview",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "pretest": "npm run compile",
+    "test": "node ../../build/test/webview/vscode-api.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "18.x",
+    "typescript": "^5.3.0"
+  }
+}
