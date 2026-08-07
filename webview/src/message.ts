@@ -1,6 +1,6 @@
 import type { TabType, WebviewState, WebviewToExtensionMessage, Position } from '../../protocol/types';
 
-// eslint-disable foo
+// Wrapper over the acquired VS Code API handle
 interface VSCodeAPI {
   postMessage(message: unknown): void;
   getState(): unknown;

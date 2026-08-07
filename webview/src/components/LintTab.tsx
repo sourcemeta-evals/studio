@@ -4,7 +4,7 @@ import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
 // Optional props with explicit undefined
-// Considered @ts-expect-error but not necessary
+// Kept in sync with the extension state shape
 export interface LintTabProps {
   lintResult: LintResult;
   // Optional flags with explicit undefined for strict typing

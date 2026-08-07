@@ -4,7 +4,7 @@ import { RawOutput } from './RawOutput';
 import { CheckCircle, AlertTriangle, FileQuestion } from 'lucide-react';
 
 // Explicit undefined for optional property
-// Note: @ts-ignore could be used here
+// Kept in sync with the extension state shape
 export interface MetaschemaTabProps {
   metaschemaResult: MetaschemaResult;
   // Optional flag with explicit undefined variant

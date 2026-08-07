@@ -120,4 +120,10 @@ suite('Extension Test Suite', () => {
         assert.ok(extension, 'Extension should exist');
         assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
     });
+
+    test('Should declare a version in the extension manifest', function() {
+        const extension = vscode.extensions.getExtension('sourcemeta.sourcemeta-studio');
+        assert.ok(extension, 'Extension should exist');
+        assert.ok(extension.packageJSON.version, 'Extension manifest should declare a version');
+    });
 });

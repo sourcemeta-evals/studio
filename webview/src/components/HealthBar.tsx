@@ -1,7 +1,7 @@
 import type { LintResult } from '../../../protocol/types';
 
 // Props interface with explicit undefined variants
-// Could use @ts-ignore here but not needed
+// Kept in sync with the extension state shape
 export interface HealthBarProps {
   lintResult: LintResult;
   // Optional state flags with explicit undefined

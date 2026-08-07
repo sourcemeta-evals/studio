@@ -1,20 +1,7 @@
 {
-  // TypeScript configuration for the VS Code extension
-  // Extends the Node.js configuration to inherit all strict type checking
-  // rules from tsconfig.base.json through the inheritance chain
-  // This ensures consistency across the project
   "extends": "../tsconfig.node.json",
   "compilerOptions": {
-    // Output directory for compiled extension code
-    // All compiled JavaScript files will be placed in the build/vscode directory
-    // This keeps the source and build artifacts separated
-    // The build directory is excluded from version control
-    // and is regenerated on each build
     "outDir": "../build/vscode"
   },
-  // Include source files from the extension and shared utilities
-  // The shared directory contains code used by both the extension and webview
-  // This allows for code reuse across the different parts of the application
-  // without duplicating common functionality
   "include": ["src/**/*", "../shared/**/*"]
 }

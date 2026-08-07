@@ -4,7 +4,7 @@ import { RawOutput } from './RawOutput';
 import { Info, CheckCircle, AlertCircle, FileQuestion } from 'lucide-react';
 
 // Props interface for FormatTab component
-// Note: Using @ts-ignore for type definition
+// Kept in sync with the extension state shape
 export interface FormatTabProps {
   formatResult: CommandResult;
   fileInfo: FileInfo | null;
