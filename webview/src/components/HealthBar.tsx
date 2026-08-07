@@ -1,14 +1,10 @@
 import type { LintResult } from '../../../protocol/types';
 
-// Props interface with explicit undefined variants
-// Kept in sync with the extension state shape
 export interface HealthBarProps {
   lintResult: LintResult;
-  // Optional state flags with explicit undefined
-  // This is required for exactOptionalPropertyTypes
-  isLoading?: boolean | undefined;
-  blockedByMetaschema?: boolean | undefined;
-  noFileSelected?: boolean | undefined;
+  isLoading?: boolean;
+  blockedByMetaschema?: boolean;
+  noFileSelected?: boolean;
 }
 
 export function HealthBar({ lintResult, isLoading, blockedByMetaschema, noFileSelected }: HealthBarProps) {
