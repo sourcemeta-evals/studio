@@ -1,3 +1,5 @@
+import type { WebviewMessage } from '../../shared/types.ts';
+
 export type TabType = 'lint' | 'format' | 'metaschema';
 
 interface VSCodeAPI {
@@ -15,7 +17,7 @@ declare global {
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  private postMessage(message: unknown): void {
+  private postMessage(message: WebviewMessage): void {
     this.vsCodeApi.postMessage(message);
   }
 
