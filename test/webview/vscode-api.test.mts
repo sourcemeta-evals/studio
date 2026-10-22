@@ -4,6 +4,8 @@ import { test } from 'node:test';
 interface RecordingHost {
     messages: unknown[];
     state: unknown;
+    stateWrites: number;
+    acquisitions: number;
 }
 
 interface WebviewApi {
@@ -15,20 +17,25 @@ interface WebviewApi {
 }
 
 function installRecordingHost(initialState?: unknown): RecordingHost {
-    const host: RecordingHost = { messages: [], state: initialState };
+    const host: RecordingHost = { messages: [], state: initialState, stateWrites: 0, acquisitions: 0 };
 
     (globalThis as { window?: unknown }).window = {
-        acquireVsCodeApi: () => ({
-            postMessage(message: unknown): void {
-                host.messages.push(message);
-            },
-            getState(): unknown {
-                return host.state;
-            },
-            setState(state: unknown): void {
-                host.state = state;
-            }
-        })
+        acquireVsCodeApi: () => {
+            host.acquisitions += 1;
+
+            return {
+                postMessage(message: unknown): void {
+                    host.messages.push(message);
+                },
+                getState(): unknown {
+                    return host.state;
+                },
+                setState(state: unknown): void {
+                    host.stateWrites += 1;
+                    host.state = state;
+                }
+            };
+        }
     };
 
     return host;
@@ -95,11 +102,11 @@ test('reading the active tab returns the stored tab without dispatching a comman
     }
 });
 
-test('reading the active tab before anything is stored neither throws nor dispatches', async () => {
+test('reading the active tab before anything is stored leaves the default selection', async () => {
     for (const initialState of [undefined, {}]) {
         const host = installRecordingHost(initialState);
         const api = await loadWebviewApi();
-        api.getActiveTab();
+        assert.strictEqual(api.getActiveTab() ?? 'lint', 'lint');
         assert.deepStrictEqual(host.messages, []);
     }
 });
@@ -116,6 +123,41 @@ test('each successive tab selection replaces the stored one', async () => {
     }
 
     assert.deepStrictEqual(host.messages, []);
+});
+
+test('only storing a tab writes editor state', async () => {
+    const host = installRecordingHost({ activeTab: 'format' });
+    const api = await loadWebviewApi();
+
+    api.openExternal('https://www.sourcemeta.com/');
+    api.formatSchema();
+    api.goToPosition([1, 2, 3, 4]);
+    api.getActiveTab();
+
+    assert.strictEqual(host.stateWrites, 0);
+    assert.deepStrictEqual(host.state, { activeTab: 'format' });
+});
+
+test('a stored active tab survives being read more than once', async () => {
+    const host = installRecordingHost({ activeTab: 'metaschema' });
+    const api = await loadWebviewApi();
+
+    assert.strictEqual(api.getActiveTab(), 'metaschema');
+    assert.strictEqual(api.getActiveTab(), 'metaschema');
+    assert.deepStrictEqual(host.state, { activeTab: 'metaschema' });
+});
+
+test('one wrapper acquires the editor API once however often it is used', async () => {
+    const host = installRecordingHost({ activeTab: 'lint' });
+    const api = await loadWebviewApi();
+
+    api.openExternal('https://www.sourcemeta.com/');
+    api.formatSchema();
+    api.goToPosition([1, 2, 3, 4]);
+    api.setActiveTab('format');
+    assert.strictEqual(api.getActiveTab(), 'format');
+
+    assert.strictEqual(host.acquisitions, 1);
 });
 
 test('a stored active tab survives a new wrapper over the same editor state', async () => {
