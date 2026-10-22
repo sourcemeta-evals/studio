@@ -1,4 +1,5 @@
 NPM = npm
+NODE = node
 NPX = npx
 CODE = code
 INSTALL = install
@@ -12,6 +13,7 @@ webview: .always
 	cd webview && $(NPM) ci
 	cd webview && $(NPM) run lint
 	cd webview && $(NPM) run build
+	$(NODE) --test test/webview/wrapper.test.mts
 
 vscode: .always
 	cd vscode && $(NPM) ci
