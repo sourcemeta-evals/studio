@@ -95,6 +95,29 @@ test('reading the active tab returns the stored tab without dispatching a comman
     }
 });
 
+test('reading the active tab before anything is stored neither throws nor dispatches', async () => {
+    for (const initialState of [undefined, {}]) {
+        const host = installRecordingHost(initialState);
+        const api = await loadWebviewApi();
+        api.getActiveTab();
+        assert.deepStrictEqual(host.messages, []);
+    }
+});
+
+test('each successive tab selection replaces the stored one', async () => {
+    const host = installRecordingHost();
+    const writer = await loadWebviewApi();
+
+    for (const tab of ['format', 'lint', 'metaschema', 'lint']) {
+        writer.setActiveTab(tab);
+
+        const reader = await loadWebviewApi();
+        assert.strictEqual(reader.getActiveTab(), tab);
+    }
+
+    assert.deepStrictEqual(host.messages, []);
+});
+
 test('a stored active tab survives a new wrapper over the same editor state', async () => {
     const host = installRecordingHost();
     const writer = await loadWebviewApi();
