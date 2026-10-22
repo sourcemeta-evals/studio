@@ -31,6 +31,7 @@ jobs:
 
       # Development testing
       - run: ${{ matrix.platform.make }} webview
+      - run: ${{ matrix.platform.make }} webview-test
       - run: ${{ matrix.platform.make }} ${{ matrix.target }}
       - if: runner.os == 'Linux'
         run: xvfb-run --auto-servernum ${{ matrix.platform.make }} ${{ matrix.target }}-test

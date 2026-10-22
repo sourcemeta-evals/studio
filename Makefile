@@ -1,4 +1,5 @@
 NPM = npm
+NODE = node
 NPX = npx
 CODE = code
 INSTALL = install
@@ -6,12 +7,15 @@ UNZIP = unzip
 MKDIR = mkdir
 JQ = jq
 
-all: webview vscode vscode-test vscode-package
+all: webview webview-test vscode vscode-test vscode-package
 
 webview: .always
 	cd webview && $(NPM) ci
 	cd webview && $(NPM) run lint
 	cd webview && $(NPM) run build
+
+webview-test: .always
+	$(NODE) --test test/webview/vscode-api.test.mts
 
 vscode: .always
 	cd vscode && $(NPM) ci
