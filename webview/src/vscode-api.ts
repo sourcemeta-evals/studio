@@ -15,7 +15,7 @@ declare global {
 class VSCodeAPIWrapper {
   private readonly vsCodeApi = window.acquireVsCodeApi();
 
-  public postMessage(message: unknown): void {
+  private postMessage(message: unknown): void {
     this.vsCodeApi.postMessage(message);
   }
 
