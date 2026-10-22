@@ -16,7 +16,8 @@ export function Footer({ cliVersion, extensionVersion }: FooterProps) {
   };
 
   const handleSourcemetaClick = () => {
-    (vscode as any).postMessage({ command: 'openExternal', url: 'https://www.sourcemeta.com/' });
+    (vscode as unknown as { postMessage(message: unknown): void })
+      .postMessage({ command: 'openExternal', url: 'https://www.sourcemeta.com/' });
   };
 
   return (
