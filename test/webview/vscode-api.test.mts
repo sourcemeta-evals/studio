@@ -78,10 +78,12 @@ test('navigating to a position dispatches one command carrying that position', a
     const positions: [number, number, number, number][] = [[3, 14, 15, 92], [1, 0, 2, 7]];
 
     for (const position of positions) {
+        const expected = [...position];
         const host = installRecordingHost();
         const api = await loadWebviewApi();
         api.goToPosition(position);
-        assert.deepStrictEqual(host.messages, [{ command: 'goToPosition', position }]);
+        assert.deepStrictEqual(host.messages, [{ command: 'goToPosition', position: expected }]);
+        assert.deepStrictEqual([...position], expected);
     }
 });
 
