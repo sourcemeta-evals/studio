@@ -2,6 +2,13 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import testSchema from './fixtures/test-schema.json';
 
+function findPanelTab(): vscode.Tab | undefined {
+    return vscode.window.tabGroups.all
+        .flatMap(group => group.tabs)
+        .find(tab => tab.input instanceof vscode.TabInputWebview
+            && tab.input.viewType.includes('sourcemetaStudio'));
+}
+
 suite('Extension Test Suite', () => {
     vscode.window.showInformationMessage('Start all tests.');
 
@@ -51,7 +58,9 @@ suite('Extension Test Suite', () => {
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        assert.ok(true, 'Command executed without error');
+        const panelTab = findPanelTab();
+        assert.ok(panelTab, 'Panel tab should be open after running the command');
+        assert.strictEqual(panelTab?.label, 'Sourcemeta Studio', 'Panel tab should carry the extension title');
     });
 
     test('Should handle JSON file opening', async function() {
@@ -96,11 +105,15 @@ suite('Extension Test Suite', () => {
 
         await new Promise(resolve => setTimeout(resolve, 500));
 
+        assert.strictEqual(findPanelTab(), undefined, 'Closing all editors should dispose the panel');
+
         await vscode.commands.executeCommand('sourcemeta-studio.openPanel');
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        assert.ok(true, 'Extension should handle no file selected without errors');
+        const panelTab = findPanelTab();
+        assert.ok(panelTab, 'Panel tab should reopen with no file selected');
+        assert.ok(panelTab?.isActive, 'Reopened panel tab should be the active tab in its group');
     });
 
     test('Should show appropriate message when no file is selected', async function() {
@@ -117,7 +130,9 @@ suite('Extension Test Suite', () => {
         await vscode.commands.executeCommand('sourcemeta-studio.openPanel');
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        assert.ok(extension, 'Extension should exist');
-        assert.ok(extension?.isActive, 'Extension should remain active with no file selected');
+        const panelTab = findPanelTab();
+        assert.ok(panelTab, 'Panel tab should be open with no file selected');
+        assert.strictEqual(vscode.window.activeTextEditor, undefined, 'No editor should be active');
+        assert.strictEqual(panelTab?.group.viewColumn, vscode.ViewColumn.One, 'Panel should take the first column when no editor is active');
     });
 });
